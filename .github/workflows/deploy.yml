@@ -19,9 +19,11 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
+        working-directory: release-proj
         run: npm install
 
       - name: Build Angular app
+        working-directory: release-proj
         run: npm run build -- --configuration production
 
       - name: Deploy via FTP
