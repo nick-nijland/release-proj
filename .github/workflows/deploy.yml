@@ -9,29 +9,33 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: release-proj
+
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 20
+          cache: 'npm'
 
       - name: Install dependencies
-        working-directory: release-proj
-        run: npm install
+        run: npm ci
 
       - name: Build Angular app
-        working-directory: release-proj
         run: npm run build -- --configuration production
 
-      - name: Deploy via SFTP
+      - name: Deploy to Strato via SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           server: ${{ secrets.SFTP_SERVER }}
           username: ${{ secrets.SFTP_USERNAME }}
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          local_path: ./release-proj/dist/release-proj/
+          local_path: release-proj/dist/release-proj/
           remote_path: /httpdocs/
+          delete_remote_files: true
