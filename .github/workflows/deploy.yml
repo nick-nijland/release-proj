@@ -29,6 +29,10 @@ jobs:
       - name: Build Angular app
         run: npm run build -- --configuration production
 
+      - name: Debug SSH key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | head -n 1
+
       - name: Deploy to Strato via SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
